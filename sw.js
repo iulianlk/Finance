@@ -1,6 +1,6 @@
 // Păstrează aplicația pe telefon, ca să meargă și fără internet.
 // Schimbă VERSION după orice modificare, ca telefonul să ia versiunea nouă.
-const VERSION = "finante-1";
+const VERSION = "finante-2";
 const FILES = ["./", "index.html", "manifest.webmanifest", "icon-180.png", "icon-192.png", "icon-512.png"];
 self.addEventListener("install", e => { e.waitUntil(caches.open(VERSION).then(c => c.addAll(FILES))); self.skipWaiting(); });
 self.addEventListener("activate", e => {

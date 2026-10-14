@@ -2,7 +2,7 @@
 <html lang="ro">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -59,28 +59,28 @@ h2{font-size:13px;text-transform:uppercase;letter-spacing:.6px;color:var(--sub);
 .tag.amber{background:var(--amber-soft);color:var(--amber)}
 .tag.green{background:var(--accent-soft);color:var(--accent)}
 .tag.blue{background:var(--blue-soft);color:var(--blue)}
-.btn{appearance:none;border:0;border-radius:12px;padding:12px 16px;font:600 16px/1 inherit;font-family:inherit;
+.btn{appearance:none;border:0;border-radius:12px;padding:12px 16px;font-weight:600;font-size:16px;font-family:inherit;
   background:var(--accent);color:#fff;cursor:pointer}
 .btn.sec{background:var(--card);color:var(--accent)}
 .btn.ghost{background:transparent;color:var(--accent);padding:8px 10px}
 .btn.danger{background:var(--red-soft);color:var(--red)}
 .btn.sm{padding:8px 12px;font-size:14px;border-radius:10px}
 .btn.wide{width:100%}
-.paybtn{background:var(--accent-soft);color:var(--accent);border:0;border-radius:99px;padding:7px 12px;font:600 14px inherit;font-family:inherit;cursor:pointer;flex:none}
+.paybtn{background:var(--accent-soft);color:var(--accent);border:0;border-radius:99px;padding:7px 12px;font-weight:600;font-size:14px;font-family:inherit;cursor:pointer;flex:none}
 .banner{border-radius:14px;padding:12px 14px;margin-top:12px;font-size:15px}
 .banner.red{background:var(--red-soft);color:var(--red)}
 .banner.amber{background:var(--amber-soft);color:var(--amber)}
 .banner.blue{background:var(--blue-soft);color:var(--blue)}
 .empty{padding:22px 16px;text-align:center;color:var(--sub)}
 .seg{display:flex;background:var(--line);border-radius:10px;padding:2px;margin:6px 0 4px}
-.seg button{flex:1;border:0;background:transparent;padding:7px 4px;border-radius:8px;font:600 13px inherit;font-family:inherit;color:var(--ink);cursor:pointer}
+.seg button{flex:1;border:0;background:transparent;padding:7px 4px;border-radius:8px;font-weight:600;font-size:13px;font-family:inherit;color:var(--ink);cursor:pointer}
 .seg button.on{background:var(--card);box-shadow:0 1px 3px #0002}
 .topbar{display:flex;align-items:flex-end;justify-content:space-between;gap:8px}
 .plus{width:38px;height:38px;border-radius:99px;border:0;background:var(--accent);color:#fff;font-size:26px;line-height:1;cursor:pointer;margin-bottom:4px}
 
 nav{position:fixed;left:0;right:0;bottom:0;background:var(--tab);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
   border-top:1px solid var(--line);display:flex;padding:6px 6px calc(6px + env(safe-area-inset-bottom));z-index:5}
-nav button{flex:1;border:0;background:none;color:var(--sub);font:500 11px inherit;font-family:inherit;display:flex;flex-direction:column;align-items:center;gap:2px;padding:4px;cursor:pointer}
+nav button{flex:1;border:0;background:none;color:var(--sub);font-weight:500;font-size:11px;font-family:inherit;display:flex;flex-direction:column;align-items:center;gap:2px;padding:4px;cursor:pointer}
 nav button span{font-size:22px;line-height:1;filter:grayscale(1);opacity:.7}
 nav button.on{color:var(--accent)}
 nav button.on span{filter:none;opacity:1}
@@ -94,19 +94,19 @@ nav button.on span{filter:none;opacity:1}
 .field{background:var(--card);border-radius:12px;margin-bottom:10px;overflow:hidden}
 .field label{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 14px;border-top:1px solid var(--line);font-size:15px}
 .field label:first-child{border-top:0}
-.field input,.field select,.field textarea{border:0;background:transparent;color:var(--ink);font:16px inherit;font-family:inherit;text-align:right;min-width:0;flex:1;outline:none}
+.field input,.field select,.field textarea{border:0;background:transparent;color:var(--ink);font-size:16px;font-family:inherit;text-align:right;min-width:0;flex:1;outline:none}
 .field textarea{text-align:left;resize:vertical;min-height:44px}
 .field input[type=checkbox]{flex:none;width:22px;height:22px;accent-color:var(--accent)}
 .field select{direction:rtl}
 .chips{display:flex;gap:6px;overflow-x:auto;padding:2px 0 10px;scrollbar-width:none}
 .chips::-webkit-scrollbar{display:none}
-.chip{flex:none;border:0;background:var(--card);color:var(--ink);border-radius:99px;padding:7px 12px;font:500 14px inherit;font-family:inherit;cursor:pointer}
+.chip{flex:none;border:0;background:var(--card);color:var(--ink);border-radius:99px;padding:7px 12px;font-weight:500;font-size:14px;font-family:inherit;cursor:pointer}
 .actions{display:flex;gap:10px;margin-top:6px}
 .actions .btn{flex:1}
 .toast{position:fixed;left:50%;bottom:calc(90px + env(safe-area-inset-bottom));transform:translateX(-50%);background:#222;color:#fff;
   padding:10px 10px 10px 16px;border-radius:12px;display:none;align-items:center;gap:12px;z-index:20;font-size:15px;max-width:92vw;box-shadow:0 6px 20px #0004}
 .toast.on{display:flex}
-.toast button{background:none;border:0;color:#7ee2a5;font:600 15px inherit;font-family:inherit;cursor:pointer;padding:4px 6px}
+.toast button{background:none;border:0;color:#7ee2a5;font-weight:600;font-size:15px;font-family:inherit;cursor:pointer;padding:4px 6px}
 .bar{height:8px;border-radius:9px;background:var(--line);overflow:hidden;margin-top:10px}
 .bar i{display:block;height:100%;background:var(--accent);border-radius:9px}
 .imp-row{display:flex;gap:10px;align-items:center;padding:9px 14px;border-top:1px solid var(--line);font-size:14px}
