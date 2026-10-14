@@ -1,0 +1,662 @@
+<!doctype html>
+<html lang="ro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Finanțe">
+<meta name="theme-color" content="#f2f2f7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" type="image/png" href="icon-192.png">
+<title>Finanțe</title>
+<style>
+:root{
+  --bg:#f2f2f7; --card:#fff; --ink:#111; --sub:#6b6b70; --line:#e3e3e8;
+  --accent:#1f9d55; --accent-soft:#e3f5ea; --red:#d93025; --red-soft:#fde7e5;
+  --amber:#b7791f; --amber-soft:#fdf3dc; --blue:#2563eb; --blue-soft:#e6eefc;
+  --tab:#ffffffee;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#000; --card:#1c1c1e; --ink:#f2f2f2; --sub:#9a9aa0; --line:#2c2c2e;
+    --accent:#34c26f; --accent-soft:#12321f; --red:#ff6b5e; --red-soft:#3a1714;
+    --amber:#f0b34a; --amber-soft:#36290f; --blue:#6ea0ff; --blue-soft:#14223d;
+    --tab:#1c1c1eee;
+  }
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--ink);
+  font:16px/1.4 -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,sans-serif}
+body{padding:env(safe-area-inset-top) 0 calc(76px + env(safe-area-inset-bottom))}
+main{max-width:640px;margin:0 auto;padding:12px 16px 24px}
+h1{font-size:30px;margin:10px 2px 2px;letter-spacing:-.5px}
+.muted{color:var(--sub)}
+.small{font-size:13px}
+h2{font-size:13px;text-transform:uppercase;letter-spacing:.6px;color:var(--sub);font-weight:600;margin:22px 4px 8px}
+.card{background:var(--card);border-radius:14px;overflow:hidden}
+.pad{padding:14px 16px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.stat{background:var(--card);border-radius:14px;padding:12px 14px}
+.stat .k{font-size:13px;color:var(--sub)}
+.stat .v{font-size:22px;font-weight:700;margin-top:2px;font-variant-numeric:tabular-nums}
+.big{grid-column:1/-1}
+.big .v{font-size:30px}
+.pos{color:var(--accent)} .neg{color:var(--red)}
+.row{display:flex;align-items:center;gap:12px;padding:12px 16px;border-top:1px solid var(--line)}
+.row:first-child{border-top:0}
+.row .ic{width:36px;height:36px;border-radius:10px;display:grid;place-items:center;font-size:18px;background:var(--bg);flex:none}
+.row .mid{flex:1;min-width:0}
+.row .t{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.row .s{font-size:13px;color:var(--sub)}
+.row .amt{font-weight:600;font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
+.tap{cursor:pointer}
+.tag{display:inline-block;font-size:11px;font-weight:600;padding:2px 7px;border-radius:99px;margin-left:4px;vertical-align:1px}
+.tag.red{background:var(--red-soft);color:var(--red)}
+.tag.amber{background:var(--amber-soft);color:var(--amber)}
+.tag.green{background:var(--accent-soft);color:var(--accent)}
+.tag.blue{background:var(--blue-soft);color:var(--blue)}
+.btn{appearance:none;border:0;border-radius:12px;padding:12px 16px;font:600 16px/1 inherit;font-family:inherit;
+  background:var(--accent);color:#fff;cursor:pointer}
+.btn.sec{background:var(--card);color:var(--accent)}
+.btn.ghost{background:transparent;color:var(--accent);padding:8px 10px}
+.btn.danger{background:var(--red-soft);color:var(--red)}
+.btn.sm{padding:8px 12px;font-size:14px;border-radius:10px}
+.btn.wide{width:100%}
+.paybtn{background:var(--accent-soft);color:var(--accent);border:0;border-radius:99px;padding:7px 12px;font:600 14px inherit;font-family:inherit;cursor:pointer;flex:none}
+.banner{border-radius:14px;padding:12px 14px;margin-top:12px;font-size:15px}
+.banner.red{background:var(--red-soft);color:var(--red)}
+.banner.amber{background:var(--amber-soft);color:var(--amber)}
+.banner.blue{background:var(--blue-soft);color:var(--blue)}
+.empty{padding:22px 16px;text-align:center;color:var(--sub)}
+.seg{display:flex;background:var(--line);border-radius:10px;padding:2px;margin:6px 0 4px}
+.seg button{flex:1;border:0;background:transparent;padding:7px 4px;border-radius:8px;font:600 13px inherit;font-family:inherit;color:var(--ink);cursor:pointer}
+.seg button.on{background:var(--card);box-shadow:0 1px 3px #0002}
+.topbar{display:flex;align-items:flex-end;justify-content:space-between;gap:8px}
+.plus{width:38px;height:38px;border-radius:99px;border:0;background:var(--accent);color:#fff;font-size:26px;line-height:1;cursor:pointer;margin-bottom:4px}
+
+nav{position:fixed;left:0;right:0;bottom:0;background:var(--tab);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  border-top:1px solid var(--line);display:flex;padding:6px 6px calc(6px + env(safe-area-inset-bottom));z-index:5}
+nav button{flex:1;border:0;background:none;color:var(--sub);font:500 11px inherit;font-family:inherit;display:flex;flex-direction:column;align-items:center;gap:2px;padding:4px;cursor:pointer}
+nav button span{font-size:22px;line-height:1;filter:grayscale(1);opacity:.7}
+nav button.on{color:var(--accent)}
+nav button.on span{filter:none;opacity:1}
+
+.sheet-bg{position:fixed;inset:0;background:#0006;z-index:10;display:none;align-items:flex-end;justify-content:center}
+.sheet-bg.open{display:flex}
+.sheet{background:var(--bg);width:100%;max-width:640px;max-height:92vh;overflow:auto;border-radius:16px 16px 0 0;
+  padding:8px 16px calc(20px + env(safe-area-inset-bottom))}
+.sheet .grab{width:40px;height:5px;border-radius:9px;background:var(--line);margin:4px auto 8px}
+.sheet h3{margin:4px 0 12px;font-size:20px;display:flex;justify-content:space-between;align-items:center}
+.field{background:var(--card);border-radius:12px;margin-bottom:10px;overflow:hidden}
+.field label{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 14px;border-top:1px solid var(--line);font-size:15px}
+.field label:first-child{border-top:0}
+.field input,.field select,.field textarea{border:0;background:transparent;color:var(--ink);font:16px inherit;font-family:inherit;text-align:right;min-width:0;flex:1;outline:none}
+.field textarea{text-align:left;resize:vertical;min-height:44px}
+.field input[type=checkbox]{flex:none;width:22px;height:22px;accent-color:var(--accent)}
+.field select{direction:rtl}
+.chips{display:flex;gap:6px;overflow-x:auto;padding:2px 0 10px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;border:0;background:var(--card);color:var(--ink);border-radius:99px;padding:7px 12px;font:500 14px inherit;font-family:inherit;cursor:pointer}
+.actions{display:flex;gap:10px;margin-top:6px}
+.actions .btn{flex:1}
+.toast{position:fixed;left:50%;bottom:calc(90px + env(safe-area-inset-bottom));transform:translateX(-50%);background:#222;color:#fff;
+  padding:10px 10px 10px 16px;border-radius:12px;display:none;align-items:center;gap:12px;z-index:20;font-size:15px;max-width:92vw;box-shadow:0 6px 20px #0004}
+.toast.on{display:flex}
+.toast button{background:none;border:0;color:#7ee2a5;font:600 15px inherit;font-family:inherit;cursor:pointer;padding:4px 6px}
+.bar{height:8px;border-radius:9px;background:var(--line);overflow:hidden;margin-top:10px}
+.bar i{display:block;height:100%;background:var(--accent);border-radius:9px}
+.imp-row{display:flex;gap:10px;align-items:center;padding:9px 14px;border-top:1px solid var(--line);font-size:14px}
+.imp-row input{width:20px;height:20px;accent-color:var(--accent);flex:none}
+.imp-row .d{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.hide{display:none!important}
+</style>
+</head>
+<body>
+<main id="app"></main>
+
+<nav>
+  <button data-tab="home" class="on"><span>🏠</span>Acasă</button>
+  <button data-tab="bills"><span>🧾</span>Plăți</button>
+  <button data-tab="income"><span>💰</span>Venituri</button>
+  <button data-tab="more"><span>⚙️</span>Mai mult</button>
+</nav>
+
+<div class="sheet-bg" id="sheetBg"><div class="sheet" id="sheet"></div></div>
+<div class="toast" id="toast"><span id="toastMsg"></span><button id="toastUndo">Anulează</button></div>
+<input type="file" id="fileCsv" accept=".csv,text/csv,text/plain" class="hide">
+<input type="file" id="fileJson" accept=".json,application/json" class="hide">
+
+<script>
+"use strict";
+// ---------- data ----------
+const KEY = "finante-v1";
+const CATS = {
+  utilitati:{n:"Utilități",e:"⚡"}, locuinta:{n:"Locuință",e:"🏠"}, abonamente:{n:"Abonamente",e:"📱"},
+  masina:{n:"Mașină",e:"🚗"}, taxe:{n:"Taxe și impozite",e:"🏛️"}, asigurari:{n:"Asigurări",e:"🛡️"},
+  credite:{n:"Credite și rate",e:"🏦"}, sanatate:{n:"Sănătate",e:"💊"}, altele:{n:"Altele",e:"📌"}
+};
+const FREQ = {1:"Lunar",2:"La 2 luni",3:"Trimestrial",6:"La 6 luni",12:"Anual",24:"La 2 ani",0:"O singură dată"};
+const ACCOUNTS = ["BCR","ING","Revolut","Numerar","Altul"];
+const TEMPLATES = [
+  {name:"Curent",cat:"utilitati",every:1,variable:true},
+  {name:"Gaz",cat:"utilitati",every:1,variable:true},
+  {name:"Apă",cat:"utilitati",every:1,variable:true},
+  {name:"Asociație",cat:"locuinta",every:1,variable:true},
+  {name:"Internet",cat:"utilitati",every:1},
+  {name:"Telefon",cat:"utilitati",every:1},
+  {name:"Chirie",cat:"locuinta",every:1},
+  {name:"Rată",cat:"credite",every:1},
+  {name:"Netflix",cat:"abonamente",every:1},
+  {name:"Spotify",cat:"abonamente",every:1},
+  {name:"iCloud",cat:"abonamente",every:1},
+  {name:"YouTube Premium",cat:"abonamente",every:1},
+  {name:"RCA",cat:"masina",every:12,remind:14},
+  {name:"ITP",cat:"masina",every:12,remind:14},
+  {name:"Rovinietă",cat:"masina",every:12,remind:7},
+  {name:"CASCO",cat:"asigurari",every:12,remind:14},
+  {name:"Impozit locuință",cat:"taxe",every:12,remind:14},
+  {name:"Impozit auto",cat:"taxe",every:12,remind:14},
+  {name:"Asigurare locuință (PAD)",cat:"asigurari",every:12,remind:14},
+  {name:"Revizie mașină",cat:"masina",every:12,remind:14},
+];
+
+function blank(){ return {payments:[], incomes:[], history:[], v:1}; }
+function load(){
+  try{ const s = JSON.parse(localStorage.getItem(KEY)); if(s && s.payments) return s; }catch(e){}
+  return blank();
+}
+let S = load();
+function save(){ try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){ alert("Nu am putut salva datele: "+e.message); } }
+if (navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(()=>{});
+const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2,7);
+
+// ---------- dates & money ----------
+const pad = n => String(n).padStart(2,"0");
+const iso = d => d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate());
+const parse = s => { const [y,m,d] = s.split("-").map(Number); return new Date(y, m-1, d); };
+const today = () => iso(new Date());
+const dim = (y,m) => new Date(y, m+1, 0).getDate();           // m: 0-based
+function addMonths(s, n, anchor){
+  const d = parse(s); let y = d.getFullYear(), m = d.getMonth() + n;
+  y += Math.floor(m/12); m = ((m%12)+12)%12;
+  return iso(new Date(y, m, Math.min(anchor || d.getDate(), dim(y,m))));
+}
+const addDays = (s, n) => { const d = parse(s); d.setDate(d.getDate()+n); return iso(d); };
+const daysBetween = (a, b) => Math.round((parse(b) - parse(a)) / 864e5);
+const MONTHS = ["ianuarie","februarie","martie","aprilie","mai","iunie","iulie","august","septembrie","octombrie","noiembrie","decembrie"];
+const fmtDate = s => { const d = parse(s); const y = d.getFullYear() !== new Date().getFullYear() ? " "+d.getFullYear() : ""; return d.getDate()+" "+MONTHS[d.getMonth()].slice(0,3)+y; };
+function when(s){
+  const n = daysBetween(today(), s);
+  if (n === 0) return "azi"; if (n === 1) return "mâine"; if (n === -1) return "ieri";
+  if (n < 0) return "acum "+(-n)+" zile"; if (n < 14) return "în "+n+" zile";
+  return fmtDate(s);
+}
+function money(v){
+  const r = Math.round(v*100)/100;
+  return new Intl.NumberFormat("ro-RO",{minimumFractionDigits: r%1 ? 2 : 0, maximumFractionDigits:2}).format(r) + " lei";
+}
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const num = v => { const n = parseFloat(String(v).replace(",", ".")); return isFinite(n) ? n : 0; };
+
+// ---------- logic ----------
+function occurrences(p, from, to){
+  const out = []; if (!p.nextDue || p.archived) return out;
+  let d = p.nextDue, guard = 0;
+  while (d <= to && guard++ < 400){
+    if (d >= from) out.push(d);
+    if (!p.every) break;
+    d = addMonths(d, p.every, p.day);
+  }
+  return out;
+}
+const activePayments = () => S.payments.filter(p => !p.archived && p.nextDue);
+function monthBounds(off=0){
+  const t = new Date(); const y = t.getFullYear(), m = t.getMonth()+off;
+  const a = new Date(y, m, 1), b = new Date(y, m+1, 0);
+  return [iso(a), iso(b)];
+}
+function markPaid(p, amount, date){
+  S.history.unshift({id:uid(), pid:p.id, name:p.name, cat:p.cat, amount, date, due:p.nextDue});
+  if (p.every) p.nextDue = addMonths(p.nextDue, p.every, p.day);
+  else p.nextDue = null;
+}
+// plăți cu debit direct: se bifează singure după ce a trecut scadența
+function autoPay(){
+  const t = today(); let n = 0;
+  for (const p of S.payments){
+    let guard = 0;
+    while (p.auto && p.nextDue && p.nextDue <= t && !p.archived && guard++ < 36){ markPaid(p, p.amount, p.nextDue); n++; }
+  }
+  if (n) save();
+}
+
+// ---------- undo ----------
+let undoSnap = null, toastTimer = null;
+function snapshot(){ undoSnap = JSON.stringify(S); }
+function toast(msg, undo=true){
+  $("#toastMsg").textContent = msg;
+  $("#toastUndo").classList.toggle("hide", !undo);
+  $("#toast").classList.add("on");
+  clearTimeout(toastTimer); toastTimer = setTimeout(()=>$("#toast").classList.remove("on"), 5000);
+}
+document.getElementById("toastUndo").onclick = () => {
+  if (undoSnap){ S = JSON.parse(undoSnap); undoSnap = null; save(); render(); }
+  $("#toast").classList.remove("on");
+};
+
+// ---------- ui helpers ----------
+function $(s){ return document.querySelector(s); }
+let tab = "home", billFilter = "toate";
+document.querySelectorAll("nav button").forEach(b => b.onclick = () => { tab = b.dataset.tab; render(); scrollTo(0,0); });
+function openSheet(html){ $("#sheet").innerHTML = '<div class="grab"></div>' + html; $("#sheetBg").classList.add("open"); }
+function closeSheet(){ $("#sheetBg").classList.remove("open"); }
+$("#sheetBg").addEventListener("click", e => { if (e.target.id === "sheetBg") closeSheet(); });
+
+function billRow(p, due, withPay=true){
+  const c = CATS[p.cat] || CATS.altele;
+  const n = daysBetween(today(), due);
+  let tag = "";
+  if (n < 0) tag = '<span class="tag red">restantă</span>';
+  else if (n <= (p.remind ?? 3)) tag = '<span class="tag amber">'+when(due)+'</span>';
+  const sub = (n < 0 || n > (p.remind ?? 3) ? when(due) + " · " : "") + (FREQ[p.every] || "") + (p.auto ? " · automat" : "");
+  const pay = withPay && !p.auto && due === p.nextDue ? '<button class="paybtn" data-pay="'+p.id+'">Plătit</button>' : "";
+  return '<div class="row"><div class="ic">'+c.e+'</div><div class="mid tap" data-edit="'+p.id+'"><div class="t">'+esc(p.name)+tag+'</div><div class="s">'+sub+'</div></div>'+
+    '<div class="amt tap" data-edit="'+p.id+'">'+(p.variable?"~":"")+money(p.amount)+'</div>'+pay+'</div>';
+}
+
+// ---------- screens ----------
+function renderHome(){
+  const t = today(), [ms, me] = monthBounds();
+  const act = activePayments();
+  const overdue = act.filter(p => p.nextDue < t);
+  const dueMonth = act.flatMap(p => occurrences(p, t, me).map(d => ({p, d})));
+  const toPay = overdue.reduce((a,p)=>a+p.amount,0) + dueMonth.reduce((a,x)=>a+x.p.amount,0);
+  const paid = S.history.filter(h => h.date >= ms && h.date <= me).reduce((a,h)=>a+h.amount,0);
+  const inc = S.incomes.filter(i => i.date >= ms && i.date <= me).reduce((a,i)=>a+i.amount,0);
+  const left = inc - paid - toPay;
+  const soon = act.filter(p => p.nextDue >= t && daysBetween(t, p.nextDue) <= (p.remind ?? 3));
+
+  // următoarele 60 de zile
+  const horizon = addDays(t, 60);
+  const upcoming = [...overdue.map(p => ({p, d:p.nextDue})), ...act.flatMap(p => occurrences(p, t, horizon).map(d => ({p, d})))]
+    .sort((a,b) => a.d.localeCompare(b.d));
+
+  // plăți mari (anuale) în următoarele 12 luni
+  const yearEnd = addMonths(t, 12);
+  const bigOnes = act.filter(p => p.every >= 6 || p.every === 0)
+    .flatMap(p => occurrences(p, t, yearEnd).map(d => ({p, d}))).sort((a,b)=>a.d.localeCompare(b.d));
+  const bigSum = bigOnes.reduce((a,x)=>a+x.p.amount,0);
+
+  const monthName = MONTHS[new Date().getMonth()];
+  let h = '<h1>'+monthName[0].toUpperCase()+monthName.slice(1)+'</h1><div class="muted small" style="margin:0 2px">'+fmtDate(t)+'</div>';
+
+  if (overdue.length) h += '<div class="banner red">⚠️ Ai '+(overdue.length===1?"o plată restantă":overdue.length+" plăți restante")+': '+overdue.map(p=>esc(p.name)).join(", ")+'</div>';
+  if (soon.length) h += '<div class="banner amber">⏰ În curând: '+soon.map(p=>esc(p.name)+" ("+when(p.nextDue)+")").join(", ")+'</div>';
+
+  h += '<h2>Luna aceasta</h2><div class="grid2">'+
+    '<div class="stat big"><div class="k">Îți rămân după toate plățile</div><div class="v '+(left<0?"neg":"pos")+'">'+money(left)+'</div>'+
+      (inc>0 ? '<div class="bar"><i style="width:'+Math.min(100, Math.round((paid)/inc*100))+'%"></i></div><div class="small muted" style="margin-top:6px">Ai cheltuit pe plăți '+Math.round(paid/inc*100)+'% din ce a intrat</div>' : '<div class="small muted" style="margin-top:4px">Adaugă venitul lunii la „Venituri”</div>')+'</div>'+
+    '<div class="stat"><div class="k">A intrat</div><div class="v pos">'+money(inc)+'</div></div>'+
+    '<div class="stat"><div class="k">Plătit</div><div class="v">'+money(paid)+'</div></div>'+
+    '<div class="stat big"><div class="k">Mai ai de plătit luna asta</div><div class="v '+(toPay?"neg":"")+'">'+money(toPay)+'</div></div>'+
+  '</div>';
+
+  h += '<h2>Următoarele 60 de zile</h2><div class="card">';
+  h += upcoming.length ? upcoming.slice(0,25).map(x => billRow(x.p, x.d)).join("") :
+    '<div class="empty">Nicio plată adăugată încă.<br><br><button class="btn sm" data-new="bill">+ Adaugă prima plată</button></div>';
+  h += '</div>';
+
+  if (bigOnes.length){
+    h += '<h2>Plăți mari în următoarele 12 luni</h2><div class="card">' + bigOnes.map(x => billRow(x.p, x.d, false)).join("") +
+      '<div class="row"><div class="mid"><div class="t">Total '+money(bigSum)+'</div><div class="s">Pune deoparte cam <b>'+money(Math.ceil(bigSum/12))+'</b> pe lună și nu te mai prind nepregătit</div></div></div></div>';
+  }
+  return h;
+}
+
+function renderBills(){
+  const filters = ["toate","lunare","anuale","arhivă"];
+  let list = S.payments.slice();
+  if (billFilter === "lunare") list = list.filter(p => !p.archived && p.nextDue && p.every > 0 && p.every < 6);
+  else if (billFilter === "anuale") list = list.filter(p => !p.archived && p.nextDue && (p.every >= 6 || p.every === 0));
+  else if (billFilter === "arhivă") list = list.filter(p => p.archived || !p.nextDue);
+  else list = list.filter(p => !p.archived && p.nextDue);
+  list.sort((a,b) => (a.nextDue||"9").localeCompare(b.nextDue||"9"));
+
+  const monthly = activePayments().reduce((a,p) => a + (p.every ? p.amount / p.every : 0), 0);
+  let h = '<div class="topbar"><h1>Plăți</h1><button class="plus" data-new="bill" aria-label="Adaugă plată">+</button></div>';
+  h += '<div class="muted small" style="margin:0 2px">În medie <b>'+money(monthly)+'</b> pe lună, cu tot cu cele anuale</div>';
+  h += '<div class="seg">'+filters.map(f => '<button data-filter="'+f+'" class="'+(f===billFilter?"on":"")+'">'+f[0].toUpperCase()+f.slice(1)+'</button>').join("")+'</div>';
+
+  if (billFilter === "arhivă"){
+    h += '<div class="card" style="margin-top:10px">' + (list.length ? list.map(p => {
+      const c = CATS[p.cat]||CATS.altele;
+      return '<div class="row tap" data-edit="'+p.id+'"><div class="ic">'+c.e+'</div><div class="mid"><div class="t">'+esc(p.name)+'</div><div class="s">'+(p.archived?"oprită":"plătită")+'</div></div><div class="amt">'+money(p.amount)+'</div></div>';
+    }).join("") : '<div class="empty">Nimic aici.</div>') + '</div>';
+  } else {
+    // grupate pe categorii
+    const groups = {};
+    for (const p of list) (groups[p.cat] ||= []).push(p);
+    const keys = Object.keys(CATS).filter(k => groups[k]);
+    if (!keys.length) h += '<div class="card" style="margin-top:10px"><div class="empty">Nicio plată aici.<br><br><button class="btn sm" data-new="bill">+ Adaugă o plată</button></div></div>';
+    for (const k of keys){
+      const sum = groups[k].reduce((a,p)=>a+p.amount,0);
+      h += '<h2>'+CATS[k].e+' '+CATS[k].n+' <span style="float:right">'+money(sum)+'</span></h2><div class="card">'+groups[k].map(p => billRow(p, p.nextDue)).join("")+'</div>';
+    }
+  }
+  return h;
+}
+
+function renderIncome(){
+  const [ms, me] = monthBounds(), [ps, pe] = monthBounds(-1);
+  const sumIn = (a,b) => S.incomes.filter(i => i.date >= a && i.date <= b).reduce((x,i)=>x+i.amount,0);
+  const list = S.incomes.slice().sort((a,b) => b.date.localeCompare(a.date));
+  let h = '<div class="topbar"><h1>Venituri</h1><button class="plus" data-new="income" aria-label="Adaugă venit">+</button></div>';
+  h += '<div class="grid2" style="margin-top:12px"><div class="stat"><div class="k">Luna aceasta</div><div class="v pos">'+money(sumIn(ms,me))+'</div></div>'+
+       '<div class="stat"><div class="k">Luna trecută</div><div class="v">'+money(sumIn(ps,pe))+'</div></div></div>';
+  // pe conturi, luna aceasta
+  const byAcc = {};
+  S.incomes.filter(i => i.date >= ms && i.date <= me).forEach(i => byAcc[i.account||"Altul"] = (byAcc[i.account||"Altul"]||0) + i.amount);
+  if (Object.keys(byAcc).length > 1) h += '<div class="small muted" style="margin:8px 4px">'+Object.entries(byAcc).map(([a,v]) => esc(a)+": "+money(v)).join(" · ")+'</div>';
+  h += '<button class="btn sec wide" style="margin-top:12px" id="impCsv">📄 Importă din extrasul băncii (CSV)</button>';
+
+  let lastMonth = "";
+  h += '<div style="margin-top:4px">';
+  if (!list.length) h += '<h2>Istoric</h2><div class="card"><div class="empty">Niciun venit încă.<br><br><button class="btn sm" data-new="income">+ Adaugă un venit</button></div></div>';
+  let open = false;
+  for (const i of list.slice(0, 200)){
+    const mk = i.date.slice(0,7);
+    if (mk !== lastMonth){
+      if (open) h += '</div>';
+      const d = parse(i.date); h += '<h2>'+MONTHS[d.getMonth()]+' '+d.getFullYear()+'</h2><div class="card">'; open = true; lastMonth = mk;
+    }
+    h += '<div class="row tap" data-inc="'+i.id+'"><div class="ic">💰</div><div class="mid"><div class="t">'+esc(i.source||"Venit")+'</div><div class="s">'+fmtDate(i.date)+(i.account?" · "+esc(i.account):"")+(i.key?" · importat":"")+'</div></div><div class="amt pos">+'+money(i.amount)+'</div></div>';
+  }
+  if (open) h += '</div>';
+  return h + '</div>';
+}
+
+function renderMore(){
+  const hist = S.history.slice(0, 40);
+  let h = '<h1>Mai mult</h1>';
+  h += '<h2>Notificări</h2><div class="card pad small">Ca să primești notificare pe iPhone înainte de fiecare plată, adaugă plățile în aplicația <b>Calendar</b> (cu alarme). Calendarul repetă plata lunar/anual și te anunță cu câte zile ai ales.<div style="margin-top:12px"><button class="btn wide" id="icsAll">📅 Adaugă toate plățile în Calendar</button></div><div class="muted" style="margin-top:8px">Dacă adaugi plăți noi, apasă din nou sau folosește butonul „Calendar” din fiecare plată.</div></div>';
+  h += '<h2>Siguranță</h2><div class="card">'+
+    '<div class="row tap" id="exp"><div class="ic">💾</div><div class="mid"><div class="t">Salvează o copie de siguranță</div><div class="s">Un fișier pe care îl poți păstra în iCloud Drive</div></div></div>'+
+    '<div class="row tap" id="imp"><div class="ic">📂</div><div class="mid"><div class="t">Restaurează din copie</div><div class="s">Înlocuiește datele cu cele din fișier</div></div></div>'+
+    '</div>';
+  h += '<h2>Ultimele plăți făcute</h2><div class="card">' + (hist.length ? hist.map(x => {
+    const c = CATS[x.cat]||CATS.altele;
+    return '<div class="row"><div class="ic">'+c.e+'</div><div class="mid"><div class="t">'+esc(x.name)+'</div><div class="s">plătit '+fmtDate(x.date)+'</div></div><div class="amt">'+money(x.amount)+'</div><button class="btn ghost sm" data-delhist="'+x.id+'" aria-label="Șterge">✕</button></div>';
+  }).join("") : '<div class="empty">Încă nimic. Apasă „Plătit” la o plată.</div>') + '</div>';
+  h += '<h2>Despre</h2><div class="card pad small muted">Datele stau doar pe telefonul tău, nu pleacă nicăieri. Fă din când în când o copie de siguranță.<br><br><button class="btn danger sm" id="wipe">Șterge toate datele</button></div>';
+  return h;
+}
+
+function render(){
+  autoPay();
+  document.querySelectorAll("nav button").forEach(b => b.classList.toggle("on", b.dataset.tab === tab));
+  $("#app").innerHTML = tab === "home" ? renderHome() : tab === "bills" ? renderBills() : tab === "income" ? renderIncome() : renderMore();
+}
+
+// ---------- events ----------
+$("#app").addEventListener("click", e => {
+  const el = e.target.closest("[data-pay],[data-edit],[data-new],[data-filter],[data-inc],[data-delhist],#impCsv,#icsAll,#exp,#imp,#wipe");
+  if (!el) return;
+  if (el.dataset.pay) return paySheet(S.payments.find(p => p.id === el.dataset.pay));
+  if (el.dataset.edit) return billSheet(S.payments.find(p => p.id === el.dataset.edit));
+  if (el.dataset.new === "bill") return billSheet();
+  if (el.dataset.new === "income") return incomeSheet();
+  if (el.dataset.inc) return incomeSheet(S.incomes.find(i => i.id === el.dataset.inc));
+  if (el.dataset.filter){ billFilter = el.dataset.filter; return render(); }
+  if (el.dataset.delhist){ snapshot(); S.history = S.history.filter(h => h.id !== el.dataset.delhist); save(); render(); return toast("Șters din istoric"); }
+  if (el.id === "impCsv") return $("#fileCsv").click();
+  if (el.id === "icsAll") return exportIcs(activePayments(), "plati");
+  if (el.id === "exp") return shareFile(new Blob([JSON.stringify(S, null, 1)], {type:"application/json"}), "finante-backup-"+today()+".json");
+  if (el.id === "imp") return $("#fileJson").click();
+  if (el.id === "wipe"){ if (confirm("Ștergi toate plățile, veniturile și istoricul?")){ snapshot(); S = blank(); save(); render(); toast("Toate datele au fost șterse"); } }
+});
+
+// ---------- sheets ----------
+function paySheet(p){
+  openSheet('<h3>'+esc(p.name)+'</h3>'+
+    '<div class="field"><label>Suma plătită<input id="pAmt" type="text" inputmode="decimal" value="'+(p.amount||"")+'"></label>'+
+    '<label>Data plății<input id="pDate" type="date" value="'+today()+'"></label></div>'+
+    '<div class="small muted" style="margin:0 4px 12px">Scadența era '+fmtDate(p.nextDue)+'.'+(p.every?' Următoarea va fi '+fmtDate(addMonths(p.nextDue,p.every,p.day))+'.':'')+'</div>'+
+    '<div class="actions"><button class="btn sec" id="cx">Renunță</button><button class="btn" id="ok">Marchează plătit</button></div>');
+  $("#cx").onclick = closeSheet;
+  $("#ok").onclick = () => {
+    const amt = num($("#pAmt").value);
+    snapshot();
+    if (p.variable && amt > 0) p.amount = amt;             // ultima sumă devine estimarea pentru luna următoare
+    markPaid(p, amt, $("#pDate").value || today());
+    save(); closeSheet(); render(); toast(p.name+" — plătit");
+  };
+}
+
+function billSheet(p){
+  const isNew = !p;
+  p = p || {cat:"utilitati", every:1, remind:3, nextDue: today(), amount:""};
+  const opt = (obj, sel) => Object.entries(obj).map(([k,v]) => '<option value="'+k+'"'+(String(k)===String(sel)?" selected":"")+'>'+(v.n ? v.e+" "+v.n : v)+'</option>').join("");
+  const remindOpts = [0,1,2,3,5,7,14,30].map(n => '<option value="'+n+'"'+(n==(p.remind??3)?" selected":"")+'>'+(n===0?"în ziua plății":n===1?"cu o zi înainte":"cu "+n+" zile înainte")+'</option>').join("");
+  openSheet('<h3>'+(isNew?"Plată nouă":"Editează plata")+(isNew?"":'<button class="btn ghost sm" id="cal">📅 Calendar</button>')+'</h3>'+
+    (isNew ? '<div class="chips">'+TEMPLATES.map((t,i) => '<button class="chip" data-tpl="'+i+'">'+CATS[t.cat].e+' '+esc(t.name)+'</button>').join("")+'</div>' : "")+
+    '<div class="field">'+
+      '<label>Nume<input id="fName" value="'+esc(p.name||"")+'" placeholder="ex. Curent Enel"></label>'+
+      '<label>Sumă (lei)<input id="fAmt" type="text" inputmode="decimal" value="'+(p.amount||"")+'" placeholder="0"></label>'+
+      '<label>Suma diferă de la o dată la alta<input id="fVar" type="checkbox"'+(p.variable?" checked":"")+'></label>'+
+      '<label>Categorie<select id="fCat">'+opt(CATS, p.cat)+'</select></label>'+
+    '</div><div class="field">'+
+      '<label>Se repetă<select id="fEvery">'+opt(FREQ, p.every)+'</select></label>'+
+      '<label>Următoarea scadență<input id="fDue" type="date" value="'+(p.nextDue||today())+'"></label>'+
+      '<label>Amintește-mi<select id="fRem">'+remindOpts+'</select></label>'+
+      '<label>Se plătește singură (debit direct)<input id="fAuto" type="checkbox"'+(p.auto?" checked":"")+'></label>'+
+    '</div><div class="field"><label><textarea id="fNote" placeholder="Notițe (cod client, IBAN, unde plătești...)">'+esc(p.note||"")+'</textarea></label></div>'+
+    '<div class="actions"><button class="btn sec" id="cx">Renunță</button><button class="btn" id="ok">Salvează</button></div>'+
+    (isNew ? "" : '<div class="actions" style="margin-top:10px"><button class="btn danger" id="arch">'+(p.archived?"Repornește":"Oprește (arhivează)")+'</button><button class="btn danger" id="del">Șterge</button></div>'));
+  document.querySelectorAll("[data-tpl]").forEach(b => b.onclick = () => {
+    const t = TEMPLATES[b.dataset.tpl];
+    $("#fName").value = t.name; $("#fCat").value = t.cat; $("#fEvery").value = t.every;
+    $("#fVar").checked = !!t.variable; $("#fRem").value = t.remind ?? 3; $("#fAmt").focus();
+  });
+  $("#cx").onclick = closeSheet;
+  $("#ok").onclick = () => {
+    const name = $("#fName").value.trim(); if (!name) return $("#fName").focus();
+    snapshot();
+    const due = $("#fDue").value || today();
+    const target = isNew ? {id:uid()} : p;
+    Object.assign(target, {
+      name, amount: num($("#fAmt").value), variable: $("#fVar").checked, cat: $("#fCat").value,
+      every: +$("#fEvery").value, nextDue: due, day: parse(due).getDate(), remind: +$("#fRem").value,
+      auto: $("#fAuto").checked, note: $("#fNote").value.trim()
+    });
+    if (isNew) S.payments.push(target);
+    save(); closeSheet(); render(); toast(isNew ? name+" adăugată" : "Salvat");
+  };
+  if (!isNew){
+    $("#cal").onclick = () => exportIcs([p], p.name);
+    $("#del").onclick = () => { if (!confirm("Ștergi „"+p.name+"”?")) return; snapshot(); S.payments = S.payments.filter(x => x.id !== p.id); save(); closeSheet(); render(); toast("Plată ștearsă"); };
+    $("#arch").onclick = () => { snapshot(); p.archived = !p.archived; if (!p.archived && !p.nextDue) p.nextDue = today(); save(); closeSheet(); render(); toast(p.archived ? "Plată oprită" : "Plată repornită"); };
+  }
+}
+
+function incomeSheet(i){
+  const isNew = !i;
+  i = i || {date: today(), account: S.lastAccount || "BCR"};
+  openSheet('<h3>'+(isNew?"Venit nou":"Editează venitul")+'</h3>'+
+    '<div class="chips">'+["Salariu","Freelance","YouTube","Chirie încasată","Transfer","Altele"].map(s => '<button class="chip" data-src="'+s+'">'+s+'</button>').join("")+'</div>'+
+    '<div class="field">'+
+      '<label>Sursa<input id="iSrc" value="'+esc(i.source||"")+'" placeholder="ex. Salariu"></label>'+
+      '<label>Sumă (lei)<input id="iAmt" type="text" inputmode="decimal" value="'+(i.amount||"")+'" placeholder="0"></label>'+
+      '<label>Data<input id="iDate" type="date" value="'+i.date+'"></label>'+
+      '<label>Cont<select id="iAcc">'+ACCOUNTS.map(a => '<option'+(a===i.account?" selected":"")+'>'+a+'</option>').join("")+'</select></label>'+
+    '</div>'+
+    '<div class="actions"><button class="btn sec" id="cx">Renunță</button><button class="btn" id="ok">Salvează</button></div>'+
+    (isNew ? "" : '<div class="actions" style="margin-top:10px"><button class="btn danger" id="del">Șterge</button></div>'));
+  document.querySelectorAll("[data-src]").forEach(b => b.onclick = () => { $("#iSrc").value = b.dataset.src; $("#iAmt").focus(); });
+  $("#cx").onclick = closeSheet;
+  $("#ok").onclick = () => {
+    const amount = num($("#iAmt").value); if (!(amount > 0)) return $("#iAmt").focus();
+    snapshot();
+    const target = isNew ? {id:uid()} : i;
+    Object.assign(target, {source: $("#iSrc").value.trim() || "Venit", amount, date: $("#iDate").value || today(), account: $("#iAcc").value});
+    S.lastAccount = target.account;
+    if (isNew) S.incomes.push(target);
+    save(); closeSheet(); render(); toast("Venit salvat");
+  };
+  if (!isNew) $("#del").onclick = () => { snapshot(); S.incomes = S.incomes.filter(x => x.id !== i.id); save(); closeSheet(); render(); toast("Venit șters"); };
+}
+
+// ---------- files ----------
+async function shareFile(blob, name){
+  const file = new File([blob], name, {type: blob.type});
+  if (navigator.canShare && navigator.canShare({files:[file]})){
+    try{ await navigator.share({files:[file]}); return; }catch(e){ if (e.name === "AbortError") return; }
+  }
+  const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = name;
+  document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(a.href), 5000);
+}
+
+function icsText(list){
+  const L = ["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//Finante//RO","CALSCALE:GREGORIAN"];
+  const stamp = new Date().toISOString().replace(/[-:]/g,"").replace(/\.\d+/,"");
+  const icsEsc = s => String(s).replace(/[\\;,]/g, m => "\\"+m).replace(/\n/g,"\\n");
+  for (const p of list){
+    const d = p.nextDue.replace(/-/g,""), e = addDays(p.nextDue,1).replace(/-/g,"");
+    L.push("BEGIN:VEVENT","UID:"+p.id+"@finante","DTSTAMP:"+stamp,"DTSTART;VALUE=DATE:"+d,"DTEND;VALUE=DATE:"+e,
+      "SUMMARY:"+icsEsc("💸 "+p.name+" – "+(p.variable?"~":"")+money(p.amount)));
+    if (p.note) L.push("DESCRIPTION:"+icsEsc(p.note));
+    if (p.every){
+      if (p.every % 12 === 0) L.push("RRULE:FREQ=YEARLY;INTERVAL="+(p.every/12));
+      else L.push("RRULE:FREQ=MONTHLY;INTERVAL="+p.every+(p.day > 28 ? ";BYMONTHDAY=-1" : ""));
+    }
+    const r = p.remind ?? 3;
+    if (r > 0) L.push("BEGIN:VALARM","ACTION:DISPLAY","DESCRIPTION:"+icsEsc(p.name+" – scadentă "+(r===1?"mâine":"în "+r+" zile")),"TRIGGER:-P"+(r-1)+"DT15H","END:VALARM");
+    L.push("BEGIN:VALARM","ACTION:DISPLAY","DESCRIPTION:"+icsEsc(p.name+" – scadentă azi"),"TRIGGER:PT9H","END:VALARM","END:VEVENT");
+  }
+  L.push("END:VCALENDAR");
+  return L.join("\r\n");
+}
+function exportIcs(list, name){
+  if (!list.length) return toast("Nu ai nicio plată de adăugat", false);
+  const blob = new Blob([icsText(list)], {type:"text/calendar"});
+  // în Safari, un .ics deschis direct apare cu „Adaugă în Calendar”
+  const standalone = navigator.standalone || matchMedia("(display-mode: standalone)").matches;
+  if (!standalone){ location.href = URL.createObjectURL(blob); return; }
+  shareFile(blob, name.replace(/[^\w-]+/g,"_")+".ics");
+}
+
+$("#fileJson").onchange = async e => {
+  const f = e.target.files[0]; e.target.value = ""; if (!f) return;
+  try{
+    const d = JSON.parse(await f.text());
+    if (!d.payments || !d.incomes) throw new Error("fișierul nu e o copie Finanțe");
+    if (!confirm("Înlocuiești datele de acum cu cele din copie ("+d.payments.length+" plăți, "+d.incomes.length+" venituri)?")) return;
+    snapshot(); S = Object.assign(blank(), d); save(); render(); toast("Date restaurate");
+  }catch(err){ alert("Nu am putut citi fișierul: "+err.message); }
+};
+
+// ---------- CSV import (BCR George, ING Home'Bank, Revolut) ----------
+function parseCSV(text){
+  text = text.replace(/^﻿/, "");
+  const lines = text.split(/\r?\n/).filter(l => l.trim()).slice(0, 30);
+  const delim = [",",";","\t"].map(d => [d, lines.reduce((a,l) => a + (l.split(d).length-1), 0)]).sort((a,b) => b[1]-a[1])[0][0];
+  const rows = []; let row = [], f = "", q = false;
+  for (let i = 0; i < text.length; i++){
+    const c = text[i];
+    if (q){ if (c === '"'){ if (text[i+1] === '"'){ f += '"'; i++; } else q = false; } else f += c; }
+    else if (c === '"') q = true;
+    else if (c === delim){ row.push(f.trim()); f = ""; }
+    else if (c === "\n"){ row.push(f.trim()); rows.push(row); row = []; f = ""; }
+    else if (c !== "\r") f += c;
+  }
+  if (f || row.length){ row.push(f.trim()); rows.push(row); }
+  return rows.filter(r => r.some(x => x));
+}
+function parseAmount(s){
+  s = String(s||"").replace(/[^\d,.\-+]/g, "");
+  if (!s || !/\d/.test(s)) return NaN;
+  const lc = s.lastIndexOf(","), ld = s.lastIndexOf(".");
+  if (lc > -1 && ld > -1){ s = lc > ld ? s.replace(/\./g,"").replace(",",".") : s.replace(/,/g,""); }
+  else if (lc > -1){ s = /,\d{1,2}$/.test(s) ? s.replace(/\./g,"").replace(",",".") : s.replace(/,/g,""); }
+  else if (/^[-+]?\d{1,3}(\.\d{3})+$/.test(s)) s = s.replace(/\./g,"");   // 5.200 sau 1.234.567 = mii
+  return parseFloat(s);
+}
+const RO_M = {ian:1,feb:2,mar:3,apr:4,mai:5,iun:6,iul:7,aug:8,sep:9,oct:10,noi:11,nov:11,dec:12,jan:1,may:5,jun:6,jul:7};
+function parseDateAny(s){
+  s = String(s||"").trim(); let m;
+  if ((m = s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/))) return iso(new Date(+m[1], m[2]-1, +m[3]));
+  if ((m = s.match(/^(\d{1,2})[./-](\d{1,2})[./-](\d{4})/))) return iso(new Date(+m[3], m[2]-1, +m[1]));
+  if ((m = s.match(/^(\d{1,2})[ .-]([a-zăâîșț]{3})[a-zăâîșț.]*[ .-](\d{4})/i)) && RO_M[m[2].toLowerCase()]) return iso(new Date(+m[3], RO_M[m[2].toLowerCase()]-1, +m[1]));
+  return null;
+}
+let IMP = null;
+$("#fileCsv").onchange = async e => {
+  const f = e.target.files[0]; e.target.value = ""; if (!f) return;
+  let text = await f.text();
+  if (text.includes("�")){ try{ text = new TextDecoder("windows-1250").decode(await f.arrayBuffer()); }catch(_){} }
+  const rows = parseCSV(text);
+  if (rows.length < 2) return alert("Fișierul nu pare un extras CSV.");
+  const width = Math.max(...rows.map(r => r.length));
+  const hi = Math.max(0, rows.findIndex(r => r.length >= Math.max(3, width-1) && r.some(c => /dat[ae]|date/i.test(c))));
+  const head = rows[hi], body = rows.slice(hi+1);
+  const find = re => head.findIndex(c => re.test(c));
+  let cDate = find(/data (tranzac|valut|opera)|completed date|started date|^dat[ae]|date/i);
+  let cAmt = find(/^credit|încasări|incasari|intrări|intrari/i); if (cAmt < 0) cAmt = find(/amount|sum[aă]|valoare/i);
+  let cDesc = find(/description|descriere|detalii|beneficiar|ordonator|explica|tranzac/i);
+  const name = f.name.toLowerCase();
+  const acc = /revolut/.test(name) || head.includes("Product") ? "Revolut" : /ing/.test(name) ? "ING" : /bcr|george/.test(name) ? "BCR" : (S.lastAccount || "BCR");
+  IMP = {head, body, cDate, cAmt, cDesc, acc};
+  importSheet();
+};
+function importItems(){
+  const {body, cDate, cAmt, cDesc, acc} = IMP;
+  const have = new Set(S.incomes.map(i => i.key).filter(Boolean));
+  const out = [];
+  for (const r of body){
+    if (r.some(c => /^(REVERTED|DECLINED|FAILED)$/.test(c))) continue;
+    const date = parseDateAny(r[cDate]), amount = parseAmount(r[cAmt]);
+    if (!date || !(amount > 0)) continue;
+    const desc = (r[cDesc] || "").replace(/\s+/g," ").slice(0, 80);
+    const key = acc+"|"+date+"|"+amount.toFixed(2)+"|"+desc.slice(0,30);
+    if (have.has(key)) continue;
+    const internal = /top.?up|exchange|schimb valutar|între conturi|intre conturi|own account|pocket|vault|economii/i.test(desc);
+    out.push({date, amount, desc, key, on: !internal});
+  }
+  return out.sort((a,b) => b.date.localeCompare(a.date));
+}
+function importSheet(){
+  const {head, cDate, cAmt, cDesc, acc} = IMP;
+  const items = importItems(); IMP.items = items;
+  const sel = (id, v) => '<select id="'+id+'">'+head.map((h,i) => '<option value="'+i+'"'+(i===v?" selected":"")+'>'+esc(h||"coloana "+(i+1))+'</option>').join("")+'</select>';
+  openSheet('<h3>Importă venituri</h3>'+
+    '<div class="field"><label>Cont<select id="xAcc">'+ACCOUNTS.map(a => '<option'+(a===acc?" selected":"")+'>'+a+'</option>').join("")+'</select></label>'+
+    '<label>Coloana cu data'+sel("xDate", cDate)+'</label>'+
+    '<label>Coloana cu suma (sau Credit)'+sel("xAmt", cAmt)+'</label>'+
+    '<label>Coloana cu descrierea'+sel("xDesc", cDesc)+'</label></div>'+
+    '<div class="small muted" style="margin:0 4px 8px">Am găsit <b>'+items.length+'</b> încasări noi. Transferurile între conturile tale sunt debifate, ca să nu le numeri de două ori.</div>'+
+    '<div class="field">'+(items.length ? items.map((x,k) => '<div class="imp-row"><input type="checkbox" data-k="'+k+'"'+(x.on?" checked":"")+'><span class="muted" style="flex:none">'+fmtDate(x.date)+'</span><span class="d">'+esc(x.desc||"—")+'</span><b class="pos">+'+money(x.amount)+'</b></div>').join("")
+      : '<div class="empty">Nicio încasare găsită. Verifică ce coloane sunt alese mai sus.</div>')+'</div>'+
+    '<div class="actions"><button class="btn sec" id="cx">Renunță</button><button class="btn" id="ok"'+(items.length?"":" disabled")+'>Importă</button></div>');
+  ["xDate","xAmt","xDesc","xAcc"].forEach(id => $("#"+id).onchange = () => {
+    IMP.cDate = +$("#xDate").value; IMP.cAmt = +$("#xAmt").value; IMP.cDesc = +$("#xDesc").value; IMP.acc = $("#xAcc").value; importSheet();
+  });
+  document.querySelectorAll("[data-k]").forEach(c => c.onchange = () => items[c.dataset.k].on = c.checked);
+  $("#cx").onclick = closeSheet;
+  $("#ok").onclick = () => {
+    const pick = items.filter(x => x.on); if (!pick.length) return closeSheet();
+    snapshot();
+    for (const x of pick) S.incomes.push({id:uid(), source: x.desc || "Încasare", amount: x.amount, date: x.date, account: IMP.acc, key: x.key});
+    S.lastAccount = IMP.acc; save(); closeSheet(); tab = "income"; render(); toast(pick.length+" venituri importate");
+  };
+}
+
+// ---------- start ----------
+render();
+document.addEventListener("visibilitychange", () => { if (!document.hidden) render(); });
+if ("serviceWorker" in navigator && location.protocol === "https:") navigator.serviceWorker.register("sw.js").catch(()=>{});
+</script>
+</body>
+</html>
